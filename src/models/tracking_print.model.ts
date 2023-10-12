@@ -1,5 +1,8 @@
+import * as mongoose from 'mongoose';
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { Document } from 'mongoose';
+import { Printer } from './printer.model';
+import { User } from './user.model';
 
 export type TrackingPrintDocument = TrackingPrint & Document;
 
@@ -8,11 +11,11 @@ export class TrackingPrint {
   @Prop()
   id: string;
 
-  @Prop()
-  printerId: string;
+  @Prop({ type: mongoose.Schema.Types.ObjectId, ref: 'Printer' })
+  printerId: Printer;
 
-  @Prop()
-  userId: string;
+  @Prop({ type: mongoose.Schema.Types.ObjectId, ref: 'User' })
+  userId: User;
 
   @Prop()
   documentId: string;
@@ -37,6 +40,9 @@ export class TrackingPrint {
 
   @Prop()
   time_end: string;
+
+  @Prop()
+  date: number;
 }
 
 export const TrackingPrintSchema = SchemaFactory.createForClass(TrackingPrint);
