@@ -8,6 +8,7 @@ import { DocumentModule } from './document/document.module';
 import { PrinterModule } from './printer/printer.module';
 import { TrackingPrintModule } from './tracking-print/tracking-print.module';
 import { RoleModule } from './role/role.module';
+import { AuthModule } from './auth/auth.module';
 
 @Module({
   imports: [
@@ -20,6 +21,7 @@ import { RoleModule } from './role/role.module';
     PrinterModule,
     TrackingPrintModule,
     RoleModule,
+    AuthModule,
   ],
   controllers: [AppController],
   providers: [AppService],
