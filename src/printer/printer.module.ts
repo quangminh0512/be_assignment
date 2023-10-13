@@ -12,3 +12,4 @@ import { Printer, PrinterSchema } from 'src/models/printer.model';
   controllers: [PrinterController],
 })
 export class PrinterModule {}
+
