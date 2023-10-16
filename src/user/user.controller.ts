@@ -1,20 +1,49 @@
 import { Controller, Get, Param } from '@nestjs/common';
 import { UserService } from './user.service';
-import { User } from '../models/user.model';
 
 @Controller()
 export class UserController {
   constructor(private readonly userService: UserService) {}
 
-  // [GET] /user
+  // [GET] Get all users
   @Get('/users')
-  async findAllUsers(): Promise<User[] | undefined> {
-    return this.userService.findAllUsers();
+  async findAllUsers() {
+    const data = this.userService.findAllUsers();
+
+    return data.then((users) => {
+      return users.map((user) => [
+        {
+          id: user._id,
+          username: user.username,
+          name: user.name,
+          class: user.class,
+          phoneNumber: user.phoneNumber,
+          balance: user.balance,
+          role: user.role,
+          createAt: user.createdAt,
+          updateAt: user.updatedAt,
+        },
+      ]);
+    });
   }
 
-  // [GET] /user/:id
+  // [GET] Get user by id
   @Get('/user/:id')
-  async findUserById(@Param('id') id: string): Promise<User | undefined> {
-    return this.userService.findUserById(id);
+  async findUserById(@Param('id') id: string) {
+    const data = this.userService.findUserById(id);
+
+    return data.then((user) => {
+      return {
+        id: user._id,
+        username: user.username,
+        name: user.name,
+        class: user.class,
+        phoneNumber: user.phoneNumber,
+        balance: user.balance,
+        role: user.role,
+        createAt: user.createdAt,
+        updateAt: user.updatedAt,
+      };
+    });
   }
 }

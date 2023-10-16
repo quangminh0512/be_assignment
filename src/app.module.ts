@@ -14,7 +14,7 @@ import { AuthModule } from './auth/auth.module';
   imports: [
     ConfigModule.forRoot(),
     MongooseModule.forRoot(process.env.DB_CONNECTION_STRING, {
-      dbName: 'dbAssignment',
+      dbName: process.env.DB_NAME,
     }),
     UserModule,
     DocumentModule,
