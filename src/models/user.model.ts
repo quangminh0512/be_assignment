@@ -1,5 +1,6 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { Document } from 'mongoose';
+import { Role } from '../user/entities/user.entities';
 
 export type UserDocument = User & Document;
 
@@ -27,7 +28,7 @@ export class User {
   balance: number;
 
   @Prop()
-  role: string;
+  role: Role;
 
   @Prop()
   createdAt: string;
