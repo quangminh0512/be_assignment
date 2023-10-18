@@ -25,6 +25,9 @@ export class Printer {
 
   @Prop()
   roomNumber: string;
+
+  @Prop()
+  isActive: boolean;
 }
 
 export const PrinterSchema = SchemaFactory.createForClass(Printer);
