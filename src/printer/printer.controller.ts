@@ -29,7 +29,7 @@ export class PrinterController {
   }
 
   @Get(':id')
-  findOne(@Param('id  ') id: string) {
+  findOne(@Param('id') id: string) {
     return this.printerService.findById(id);
   }
 
