@@ -1,12 +1,14 @@
+import * as mongoose from 'mongoose';
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { Document } from 'mongoose';
+import { User } from './user.model';
 
 export type DocModal = Doc & Document;
 
 @Schema()
 export class Doc {
-  @Prop()
-  studentId: string;
+  @Prop({ type: mongoose.Schema.Types.ObjectId, ref: 'User' })
+  userId: User;
 
   @Prop()
   documentId: string;
