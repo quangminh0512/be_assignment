@@ -10,16 +10,14 @@ import {
 } from '@nestjs/common';
 import { Express } from 'express';
 import { FileInterceptor } from '@nestjs/platform-express';
-// import { join } from 'path';
-// import { Observable, of } from 'rxjs';
 import { saveFileToStorage } from '../helpers/file-storage';
+import { makeId } from '../helpers/make-id';
 import { DocumentService } from './document.service';
 import { Doc } from '../models/document.model';
 import { CreateDocumentDto } from './dto/create-document.dto';
 import { UpdateDocumentDto } from './dto/update-document.dto';
 import { readFileSync } from 'fs';
 import countPages from 'page-count';
-// import { DocxCounter, OdtCounter, PdfCounter, PptxCounter } from "page-count";
 import { FileTypes } from 'page-count/dist/files-types/base.count';
 
 const secondsPerPrint = 2;
@@ -87,11 +85,12 @@ export class DocumentController {
     @Body() createDocumentDto: CreateDocumentDto,
     @UploadedFile() file: Express.Multer.File,
   ): Promise<any> {
-    // Đảm bảo file in là pdf hay là docx
+    // Đảm bảo file in là pdf
     const fileName = file?.filename;
 
-    if (!fileName) return { error: 'File must be a docx, pdf' };
+    if (!fileName) return { error: 'File must be a pdf' };
 
+    // Đếm số lượng trang trong file
     const fileType: FileTypes = file.filename.slice(
       file.filename.lastIndexOf('.') + 1,
     ) as FileTypes;
@@ -100,8 +99,14 @@ export class DocumentController {
     );
     const pages = await countPages(fileBuffer, fileType);
 
+    // Cập nhật các field còn thiếu trong DTO (userId gửi lên thông qua form-data - có sẵn trong DTO)
+    createDocumentDto.documentId = makeId(10);
     createDocumentDto.fileName = file.filename;
-    // return this.documentService.createDocument(createDocumentDto);
-    return pages;
+    createDocumentDto.start_print = null;
+    createDocumentDto.end_print = null;
+    createDocumentDto.pages = pages.toString();
+
+    // Tạo document mới
+    return this.documentService.createDocument(createDocumentDto);
   }
 }

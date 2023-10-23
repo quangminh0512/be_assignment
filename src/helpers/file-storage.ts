@@ -1,14 +1,11 @@
 import { diskStorage } from 'multer';
 // import * as path from 'path';
 
-// type validFileExtension = 'docx' | 'pdf';
-type validMimeType =
-  | 'application/vnd.openxmlformats-officedocument.wordprocessingml.document'
-  | 'application/pdf';
+type validMimeType = 'application/pdf';
+// | 'application/vnd.openxmlformats-officedocument.wordprocessingml.document'
 
-// const validFileExtensions: validFileExtension[] = ['docx', 'pdf'];
 const validMimeTypes: validMimeType[] = [
-  'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
+  // 'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
   'application/pdf',
 ];
 

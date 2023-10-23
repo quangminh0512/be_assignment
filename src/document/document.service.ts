@@ -31,9 +31,6 @@ export class DocumentService {
   }
 
   async createDocument(createDocumentDto: CreateDocumentDto): Promise<Doc> {
-    createDocumentDto.start_print = null;
-    createDocumentDto.end_print = null;
-
     // Add vào Mongodb collection
     const createdDocument = new this.documentModel(createDocumentDto);
     return createdDocument.save();
