@@ -1,37 +1,70 @@
 import { Model } from 'mongoose';
-import { Injectable, UnauthorizedException } from '@nestjs/common';
+import { BadRequestException, Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { User } from '../models/user.model';
-import { SigninDto } from './dto/sigin.dto';
+import { AuthDto } from './dto/auth.dto';
 import * as bcrypt from 'bcrypt';
+import { UserService } from '../user/user.service';
+import { JwtService } from '@nestjs/jwt';
 
 @Injectable()
 export class AuthService {
   constructor(
-    @InjectModel(User.name)
-    private userModel: Model<User>,
+    @InjectModel('User')
+    private readonly userModel: Model<User>,
+    private usersService: UserService,
+    private jwtService: JwtService,
   ) {}
 
-  async signIn(signInDto: SigninDto): Promise<any> {
-    // Tìm record match với username
-    const user = await this.userModel.findOne({ username: signInDto.username });
+  async signIn(data: AuthDto): Promise<any> {
+    const user = await this.userModel.findOne({ username: data.username });
 
-    // Nếu match
-    if (user) {
-      // Đối chiếu password với hashed password trong record
-      const hash = user.password;
-      const isMatch = await bcrypt.compare(signInDto.password, hash);
-
-      // Nếu match
-      if (isMatch) {
-        // Trả về thông tin user trừ password
-        return this.userModel
-          .findOne({ username: signInDto.username })
-          .select('-password')
-          .exec();
-      }
+    if (!user) {
+      throw new BadRequestException('User does not exist');
     }
-    // Nếu không tồn tại username hay password không match throw exception
-    throw new UnauthorizedException();
+
+    const passwordValid = await bcrypt.compare(data.password, user.password);
+    if (!passwordValid) {
+      throw new BadRequestException('Password is incorrect');
+    }
+    const tokens = await this.getTokens(user.id, user.username, user.role);
+    // await this.updateRefreshToken(user._id, tokens.refreshToken);
+    return tokens;
+  }
+
+  hashData(data: string) {
+    const saltOrRounds = 10;
+    return bcrypt.hash(data, saltOrRounds);
+  }
+
+  // async updateRefreshToken(userId: string, refreshToken: string) {
+  //   const hashedRefreshToken = await this.hashData(refreshToken);
+  //   await this.usersService.update(userId, {
+  //     refreshToken: hashedRefreshToken,
+  //   });
+  // }
+
+  async getTokens(userId: string, username: string, role: string) {
+    const [accessToken] = await Promise.all([
+      this.jwtService.signAsync(
+        {
+          sub: userId,
+          username,
+          role,
+        },
+        {
+          secret: 'ACCESS_SECRET_KEY',
+          expiresIn: '2h',
+        },
+      ),
+    ]);
+
+    return {
+      status: 'success',
+      username: username,
+      accessToken,
+      role: role,
+      // refreshToken,
+    };
   }
 }
