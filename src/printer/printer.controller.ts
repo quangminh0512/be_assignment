@@ -42,6 +42,18 @@ export class PrinterController {
 
   @UseGuards(AccessTokenGuard, RoleGuard)
   @Roles(Role.Admin)
+  @Put('file-type/:id')
+  async setFileType(
+    @Param('id')
+    id: string,
+    @Body()
+    updatePrinterDto: UpdatePrinterDto,
+  ) {
+    return this.printerService.update(id, updatePrinterDto);
+  }
+
+  @UseGuards(AccessTokenGuard, RoleGuard)
+  @Roles(Role.Admin)
   @Put(':id')
   async update(
     @Param('id')

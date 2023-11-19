@@ -5,4 +5,5 @@ export class CreatePrinterDto {
   description: string;
   buildingName: string;
   roomNumber: string;
+  filetype: string;
 }
