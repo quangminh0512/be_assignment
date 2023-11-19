@@ -16,9 +16,6 @@ import { DocumentService } from './document.service';
 import { Doc } from '../models/document.model';
 import { CreateDocumentDto } from './dto/create-document.dto';
 import { UpdateDocumentDto } from './dto/update-document.dto';
-import { readFileSync } from 'fs';
-import countPages from 'page-count';
-import { FileTypes } from 'page-count/dist/files-types/base.count';
 
 const secondsPerPrint = 2;
 
@@ -88,20 +85,14 @@ export class DocumentController {
     // Đảm bảo file in là pdf
     const fileName = file?.filename;
 
-    if (!fileName) return { error: 'File must be a pdf' };
+    if (!fileName) return { error: 'File must be a pdf or docx' };
 
     // Đếm số lượng trang trong file
-    const fileType: FileTypes = file.filename.slice(
-      file.filename.lastIndexOf('.') + 1,
-    ) as FileTypes;
-    const fileBuffer = readFileSync(
-      'src/document/uploads' + '/' + file.filename,
-    );
-    const pages = await countPages(fileBuffer, fileType);
+    const pages = await this.documentService.countPgs(file);
 
     // Cập nhật các field còn thiếu trong DTO (userId gửi lên thông qua form-data - có sẵn trong DTO)
     createDocumentDto.documentId = makeId(10);
-    createDocumentDto.fileName = file.filename;
+    createDocumentDto.fileName = fileName;
     createDocumentDto.start_print = null;
     createDocumentDto.end_print = null;
     createDocumentDto.pages = pages.toString();

@@ -4,6 +4,9 @@ import { InjectModel } from '@nestjs/mongoose';
 import { Doc } from '../models/document.model';
 import { CreateDocumentDto } from './dto/create-document.dto';
 import { UpdateDocumentDto } from './dto/update-document.dto';
+import { readFileSync } from 'fs';
+import countPages from 'page-count';
+import { FileTypes } from 'page-count/dist/files-types/base.count';
 
 @Injectable()
 export class DocumentService {
@@ -11,6 +14,18 @@ export class DocumentService {
     @InjectModel(Doc.name)
     private documentModel: Model<Doc>,
   ) {}
+
+  async countPgs(file: Express.Multer.File): Promise<number> {
+    const fileType: FileTypes = file.filename.slice(
+      file.filename.lastIndexOf('.') + 1,
+    ) as FileTypes;
+
+    const fileBuffer = readFileSync(
+      'src/document/uploads' + '/' + file.filename,
+    );
+
+    return countPages(fileBuffer, fileType);
+  }
 
   async findAllDocuments(): Promise<Doc[] | undefined> {
     // Return toàn bộ document trong collection dưới dạng array
