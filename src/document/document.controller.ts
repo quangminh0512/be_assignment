@@ -84,11 +84,20 @@ export class DocumentController {
   ): Promise<any> {
     // Đảm bảo file in là pdf
     const fileName = file?.filename;
+    let pages = 0;
 
-    if (!fileName) return { error: 'File must be a pdf or docx' };
+    if (!fileName)
+      return { error: 'File must be a pdf, docx, pptx, xlsx, xls, or csv' };
 
     // Đếm số lượng trang trong file
-    const pages = await this.documentService.countPgs(file);
+    if (
+      file.mimetype === 'application/pdf' ||
+      file.mimetype ===
+        'application/vnd.openxmlformats-officedocument.wordprocessingml.document' ||
+      file.mimetype ===
+        'application/vnd.openxmlformats-officedocument.presentationml.presentation'
+    )
+      pages = await this.documentService.countPgs(file);
 
     // Cập nhật các field còn thiếu trong DTO (userId gửi lên thông qua form-data - có sẵn trong DTO)
     createDocumentDto.documentId = makeId(10);
