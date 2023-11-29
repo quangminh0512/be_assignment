@@ -27,6 +27,9 @@ export class Printer {
   roomNumber: string;
 
   @Prop()
+  filetype: string;
+
+  @Prop()
   isActive: boolean;
 }
 
