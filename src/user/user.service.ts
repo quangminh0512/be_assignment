@@ -1,7 +1,9 @@
 import { Model } from 'mongoose';
-import { Injectable } from '@nestjs/common';
+import { BadRequestException, Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { User, UserDocument } from '../models/user.model';
+import * as bcrypt from 'bcrypt';
+import { CreateUserDto } from './dto/createUser.dto';
 
 @Injectable()
 export class UserService {
@@ -9,6 +11,29 @@ export class UserService {
     @InjectModel(User.name)
     private userModel: Model<User>,
   ) {}
+
+  async create(createUserDto: CreateUserDto): Promise<UserDocument> {
+    // Check user already exists
+    const userExists = await this.findUserByUsername(createUserDto.username);
+
+    if (userExists) {
+      throw new BadRequestException('User already exists');
+    }
+
+    // Hash password
+    const saltOrRounds = 10;
+    const hashPassword = await bcrypt.hash(
+      createUserDto.password,
+      saltOrRounds,
+    );
+
+    const createdUser = new this.userModel({
+      username: createUserDto.username,
+      password: hashPassword,
+      role: createUserDto.role,
+    });
+    return createdUser.save();
+  }
 
   async findAllUsers(): Promise<UserDocument[]> {
     // Return toàn bộ users trong collection dưới dạng array
