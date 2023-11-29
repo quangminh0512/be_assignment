@@ -67,4 +67,31 @@ export class AuthService {
       // refreshToken,
     };
   }
+
+  // Login with google
+  async googleLogin(req: any) {
+    if (!req.user) {
+      return 'No user from google';
+    }
+
+    // Check if user already exists
+    const checkEmailExists = this.userModel.collection.countDocuments({
+      email: req.user.email,
+    });
+
+    checkEmailExists
+      .then((res: any) => {
+        console.log(res);
+        if (res === null || res === 0) {
+          return this.userModel.create({
+            email: req.user.email,
+            firstName: req.user.firstName,
+            lastName: req.user.lastName,
+            image: req.user.picture,
+            access_Token: req.user.accessToken,
+          });
+        }
+      })
+      .catch((err) => console.log(err));
+  }
 }
