@@ -75,12 +75,13 @@ export class DocumentController {
     );
   }
 
-  // [POST] /document/upload
-  @Post('upload')
+  // [POST] /document/:userId/upload
+  @Post(':userId/upload')
   @UseInterceptors(FileInterceptor('file', saveFileToStorage))
   async uploadDocument(
     @Body() createDocumentDto: CreateDocumentDto,
     @UploadedFile() file: Express.Multer.File,
+    @Param('userId') userId: string,
   ): Promise<any> {
     // Đảm bảo file in là pdf
     const fileName = file?.filename;
@@ -105,6 +106,7 @@ export class DocumentController {
     createDocumentDto.start_print = null;
     createDocumentDto.end_print = null;
     createDocumentDto.pages = pages.toString();
+    createDocumentDto.userId = userId;
 
     // Tạo document mới
     return this.documentService.createDocument(createDocumentDto);
