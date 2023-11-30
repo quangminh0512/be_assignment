@@ -56,7 +56,7 @@ export class UserController {
   }
 
   // [PATCH] Update pages default for user
-  @Patch('/user/:id')
+  @Patch('/user/:id/page-default'')
   async updatePagesDefaultForUser(@Param('id') id: string) {
     const data = this.userService.updatePagesDefaultForUser(id);
 
