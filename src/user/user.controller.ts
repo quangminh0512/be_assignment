@@ -1,4 +1,4 @@
-import { Controller, Get, Param, UseGuards } from '@nestjs/common';
+import { Controller, Get, Param, Patch, UseGuards } from '@nestjs/common';
 import { UserService } from './user.service';
 import { AccessTokenGuard } from 'src/auth/guards/tokens/accessToken.guard';
 import { Role } from './entities/user.entities';
@@ -46,9 +46,24 @@ export class UserController {
         class: user.class,
         phoneNumber: user.phoneNumber,
         balance: user.balance,
+        pages: user.pages,
         role: user.role,
         createAt: user.createdAt,
         updateAt: user.updatedAt,
+      };
+    });
+  }
+
+  // [PATCH] Update pages for user
+  @Patch('/user/:id')
+  async updatePageForUser(@Param('id') id: string) {
+    const data = this.userService.updatePagesForUser(id);
+
+    return data.then((user) => {
+      return {
+        message: 'Update pages successfully',
+        id: user._id,
+        name: user.name,
       };
     });
   }
