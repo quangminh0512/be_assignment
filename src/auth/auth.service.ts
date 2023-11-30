@@ -79,11 +79,13 @@ export class AuthService {
       ),
     ]);
 
+    const getUserId = await this.userModel.findOne({ username: username });
+
     return {
       status: 'success',
+      id: getUserId._id,
       username: username,
       accessToken,
-      role: role,
       // refreshToken,
     };
   }
