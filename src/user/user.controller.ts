@@ -1,9 +1,10 @@
-import { Controller, Get, Param, Patch, UseGuards } from '@nestjs/common';
+import { Body, Controller, Get, Param, Patch, UseGuards } from '@nestjs/common';
 import { UserService } from './user.service';
 import { AccessTokenGuard } from 'src/auth/guards/tokens/accessToken.guard';
 import { Role } from './entities/user.entities';
 import { Roles } from 'src/auth/decorators/roles.decorator';
 import { RoleGuard } from 'src/auth/guards/roles.guard';
+import { UpdateUserDto } from './dto/updateUser.dto';
 
 @Controller()
 export class UserController {
@@ -54,10 +55,10 @@ export class UserController {
     });
   }
 
-  // [PATCH] Update pages for user
+  // [PATCH] Update pages default for user
   @Patch('/user/:id')
-  async updatePageForUser(@Param('id') id: string) {
-    const data = this.userService.updatePagesForUser(id);
+  async updatePagesDefaultForUser(@Param('id') id: string) {
+    const data = this.userService.updatePagesDefaultForUser(id);
 
     return data.then((user) => {
       return {
@@ -66,5 +67,14 @@ export class UserController {
         name: user.name,
       };
     });
+  }
+
+  // [PATCH] Update pages for user
+  @Patch('/user/:id/pages')
+  async updatePagesForUser(
+    @Param('id') id: string,
+    @Body() updateUserDto: UpdateUserDto,
+  ) {
+    return this.userService.updatePagesForUser(id, updateUserDto);
   }
 }

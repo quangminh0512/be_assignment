@@ -4,6 +4,7 @@ import { InjectModel } from '@nestjs/mongoose';
 import { User, UserDocument } from '../models/user.model';
 import * as bcrypt from 'bcrypt';
 import { CreateUserDto } from './dto/createUser.dto';
+import { UpdateUserDto } from './dto/updateUser.dto';
 
 @Injectable()
 export class UserService {
@@ -52,7 +53,7 @@ export class UserService {
       .exec();
   }
 
-  async updatePagesForUser(@Param('id') id: string) {
+  async updatePagesDefaultForUser(@Param('id') id: string) {
     const userExists = await this.userModel.findById(id);
     if (!userExists) {
       throw new BadRequestException('User not found');
@@ -65,5 +66,19 @@ export class UserService {
     const totalPages = getUserId.pages + pagesDefault;
 
     return this.userModel.findByIdAndUpdate(id, { pages: totalPages });
+  }
+
+  async updatePagesForUser(
+    @Param('id') id: string,
+    updateUserDto: UpdateUserDto,
+  ): Promise<UserDocument> {
+    const userExists = await this.userModel.findById(id);
+    if (!userExists) {
+      throw new BadRequestException('User not found');
+    }
+
+    return this.userModel
+      .findByIdAndUpdate(id, updateUserDto, { new: true })
+      .exec();
   }
 }
