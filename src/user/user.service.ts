@@ -1,5 +1,5 @@
 import { Model } from 'mongoose';
-import { BadRequestException, Injectable } from '@nestjs/common';
+import { BadRequestException, Injectable, Param } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { User, UserDocument } from '../models/user.model';
 import * as bcrypt from 'bcrypt';
@@ -50,5 +50,20 @@ export class UserService {
     return this.userModel
       .findOne({ username: new RegExp('^' + username + '$', 'i') })
       .exec();
+  }
+
+  async updatePagesForUser(@Param('id') id: string) {
+    const userExists = await this.userModel.findById(id);
+    if (!userExists) {
+      throw new BadRequestException('User not found');
+    }
+
+    const pagesDefault: any = 50;
+
+    const getUserId = await this.findUserById(id);
+
+    const totalPages = getUserId.pages + pagesDefault;
+
+    return this.userModel.findByIdAndUpdate(id, { pages: totalPages });
   }
 }

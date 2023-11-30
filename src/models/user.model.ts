@@ -28,6 +28,9 @@ export class User {
   balance: number;
 
   @Prop()
+  pages: number;
+
+  @Prop()
   role: Role;
 
   @Prop()
