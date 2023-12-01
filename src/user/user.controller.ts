@@ -23,6 +23,8 @@ export class UserController {
           id: user._id,
           username: user.username,
           name: user.name,
+          firstName: user.firstName,
+          lastName: user.lastName,
           class: user.class,
           phoneNumber: user.phoneNumber,
           balance: user.balance,
