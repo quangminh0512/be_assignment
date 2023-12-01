@@ -1,9 +1,10 @@
-import { Controller, Get, Param, UseGuards } from '@nestjs/common';
+import { Body, Controller, Get, Param, Patch, UseGuards } from '@nestjs/common';
 import { UserService } from './user.service';
 import { AccessTokenGuard } from 'src/auth/guards/tokens/accessToken.guard';
 import { Role } from './entities/user.entities';
 import { Roles } from 'src/auth/decorators/roles.decorator';
 import { RoleGuard } from 'src/auth/guards/roles.guard';
+import { UpdateUserDto } from './dto/updateUser.dto';
 
 @Controller()
 export class UserController {
@@ -22,6 +23,8 @@ export class UserController {
           id: user._id,
           username: user.username,
           name: user.name,
+          firstName: user.firstName,
+          lastName: user.lastName,
           class: user.class,
           phoneNumber: user.phoneNumber,
           balance: user.balance,
@@ -46,10 +49,60 @@ export class UserController {
         class: user.class,
         phoneNumber: user.phoneNumber,
         balance: user.balance,
+        pages: user.pages,
         role: user.role,
         createAt: user.createdAt,
         updateAt: user.updatedAt,
       };
     });
+  }
+
+  // [PATCH] Update pages default for user
+  @UseGuards(AccessTokenGuard, RoleGuard)
+  @Roles(Role.Admin)
+  @Patch('/user/:id/update-page')
+  async updatePagesDefaultForUser(
+    @Param('id') id: string,
+    @Body() updateUserDto: UpdateUserDto,
+  ) {
+    const data = this.userService.updatePagesDefaultForUser(id, updateUserDto);
+
+    return data.then((user) => {
+      return {
+        message: 'Update pages successfully',
+        id: user._id,
+        name: user.name,
+        pages: user.pages,
+      };
+    });
+  }
+
+  @Patch('/user/:userId/update-balance')
+  async updateBalanceForUser(
+    @Param('userId') userId: string,
+    @Body() updateUserDto: UpdateUserDto,
+  ) {
+    const data = this.userService.updateBalanceForUser(userId, updateUserDto);
+
+    return data.then((user) => {
+      return {
+        message: 'Update balance successfully',
+        id: user._id,
+        name: user.name,
+        balance: user.balance,
+      };
+    });
+  }
+
+  // [PATCH] Update pages default for user
+  @Patch('/user/:userId/buy-pages')
+  async updateBalanceAfterBuyingPages(
+    @Param('userId') userId: string,
+    @Body() updateUserDto: UpdateUserDto,
+  ): Promise<any> {
+    return this.userService.updateBalanceAfterBuyingPages(
+      userId,
+      updateUserDto,
+    );
   }
 }

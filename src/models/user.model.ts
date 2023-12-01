@@ -9,14 +9,26 @@ export class User {
   @Prop()
   id: string;
 
-  @Prop({ required: true })
+  @Prop()
+  studentId: string;
+
+  @Prop()
   username: string;
 
-  @Prop({ required: true })
+  @Prop()
   password: string;
 
   @Prop()
+  email: string;
+
+  @Prop()
   name: string;
+
+  @Prop()
+  firstName: string;
+
+  @Prop()
+  lastName: string;
 
   @Prop()
   class: string;
@@ -24,17 +36,23 @@ export class User {
   @Prop()
   phoneNumber: string;
 
-  @Prop()
+  @Prop({ default: 0 })
   balance: number;
 
+  @Prop({ default: 0 })
+  pages: number;
+
   @Prop()
+  accessToken: string;
+
+  @Prop({ default: Role.User })
   role: Role;
 
-  @Prop()
-  createdAt: string;
+  @Prop({ default: +new Date() })
+  createdAt: Date;
 
-  @Prop()
-  updatedAt: string;
+  @Prop({ default: +new Date() })
+  updatedAt: Date;
 }
 
 export const UserSchema = SchemaFactory.createForClass(User);

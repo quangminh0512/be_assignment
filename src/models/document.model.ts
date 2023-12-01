@@ -22,8 +22,8 @@ export class Doc {
   @Prop()
   end_print: string;
 
-  @Prop()
-  pages: string;
+  @Prop({ default: 0 })
+  pages: number;
 }
 
 export const DocSchema = SchemaFactory.createForClass(Doc);
