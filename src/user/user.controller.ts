@@ -68,6 +68,7 @@ export class UserController {
         message: 'Update pages successfully',
         id: user._id,
         name: user.name,
+        pages: user.pages,
       };
     });
   }

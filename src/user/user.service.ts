@@ -66,7 +66,9 @@ export class UserService {
 
     const totalPages = getUserId.pages + updateUserDto.page;
 
-    return this.userModel.findByIdAndUpdate(id, { pages: totalPages });
+    return this.userModel
+      .findByIdAndUpdate(id, { pages: totalPages }, { new: true })
+      .exec();
   }
 
   async updateBalanceForUser(
@@ -79,6 +81,10 @@ export class UserService {
     }
 
     const getUserId = await this.findUserById(userId);
+
+    if (getUserId.balance === undefined || Number.isNaN(getUserId.balance)) {
+      getUserId.balance = 0;
+    }
 
     const newBalance = getUserId.balance + updateUserDto.balance;
 

@@ -26,14 +26,14 @@ export class TrackingPrint {
   @Prop()
   content: string;
 
-  @Prop()
-  pages: string;
+  @Prop({ default: 0 })
+  pages: number;
 
   @Prop()
   paperType: string;
 
-  @Prop()
-  copies: string;
+  @Prop({ default: 0 })
+  copies: number;
 
   @Prop()
   time_started: string;

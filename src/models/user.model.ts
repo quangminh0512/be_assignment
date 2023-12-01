@@ -27,10 +27,10 @@ export class User {
   @Prop()
   phoneNumber: string;
 
-  @Prop()
+  @Prop({ default: 0 })
   balance: number;
 
-  @Prop()
+  @Prop({ default: 0 })
   pages: number;
 
   @Prop()
