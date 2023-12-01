@@ -5,7 +5,6 @@ import { Role } from './entities/user.entities';
 import { Roles } from 'src/auth/decorators/roles.decorator';
 import { RoleGuard } from 'src/auth/guards/roles.guard';
 import { UpdateUserDto } from './dto/updateUser.dto';
-import { CreateUserDto } from './dto/createUser.dto';
 
 @Controller()
 export class UserController {
@@ -59,6 +58,8 @@ export class UserController {
   }
 
   // [PATCH] Update pages default for user
+  @UseGuards(AccessTokenGuard, RoleGuard)
+  @Roles(Role.Admin)
   @Patch('/user/:id/update-page')
   async updatePagesDefaultForUser(
     @Param('id') id: string,
