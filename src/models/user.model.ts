@@ -9,6 +9,9 @@ export class User {
   @Prop()
   id: string;
 
+  @Prop()
+  studentId: string;
+
   @Prop({ required: true })
   username: string;
 

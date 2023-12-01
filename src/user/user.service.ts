@@ -53,32 +53,37 @@ export class UserService {
       .exec();
   }
 
-  async updatePagesDefaultForUser(@Param('id') id: string) {
+  async updatePagesDefaultForUser(
+    @Param('id') id: string,
+    updateUserDto: UpdateUserDto,
+  ) {
     const userExists = await this.userModel.findById(id);
     if (!userExists) {
       throw new BadRequestException('User not found');
     }
 
-    const pagesDefault: any = 50;
-
     const getUserId = await this.findUserById(id);
 
-    const totalPages = getUserId.pages + pagesDefault;
+    const totalPages = getUserId.pages + updateUserDto.page;
 
     return this.userModel.findByIdAndUpdate(id, { pages: totalPages });
   }
 
-  async updatePagesForUser(
-    @Param('id') id: string,
+  async updateBalanceForUser(
+    @Param('userId') userId: string,
     updateUserDto: UpdateUserDto,
-  ): Promise<UserDocument> {
-    const userExists = await this.userModel.findById(id);
+  ) {
+    const userExists = await this.userModel.findById(userId);
     if (!userExists) {
       throw new BadRequestException('User not found');
     }
 
+    const getUserId = await this.findUserById(userId);
+
+    const newBalance = getUserId.balance + updateUserDto.balance;
+
     return this.userModel
-      .findByIdAndUpdate(id, updateUserDto, { new: true })
+      .findByIdAndUpdate(userId, { balance: newBalance }, { new: true })
       .exec();
   }
 }
