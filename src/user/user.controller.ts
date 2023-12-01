@@ -56,9 +56,12 @@ export class UserController {
   }
 
   // [PATCH] Update pages default for user
-  @Patch('/user/:id/page-default')
-  async updatePagesDefaultForUser(@Param('id') id: string) {
-    const data = this.userService.updatePagesDefaultForUser(id);
+  @Patch('/user/:id/update-page')
+  async updatePagesDefaultForUser(
+    @Param('id') id: string,
+    @Body() updateUserDto: UpdateUserDto,
+  ) {
+    const data = this.userService.updatePagesDefaultForUser(id, updateUserDto);
 
     return data.then((user) => {
       return {
@@ -69,12 +72,20 @@ export class UserController {
     });
   }
 
-  // [PATCH] Update pages for user
-  @Patch('/user/:id/pages')
-  async updatePagesForUser(
-    @Param('id') id: string,
+  @Patch('/user/:userId/update-balance')
+  async updateBalanceForUser(
+    @Param('userId') userId: string,
     @Body() updateUserDto: UpdateUserDto,
   ) {
-    return this.userService.updatePagesForUser(id, updateUserDto);
+    const data = this.userService.updateBalanceForUser(userId, updateUserDto);
+
+    return data.then((user) => {
+      return {
+        message: 'Update balance successfully',
+        id: user._id,
+        name: user.name,
+        balance: user.balance,
+      };
+    });
   }
 }

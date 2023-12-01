@@ -86,6 +86,7 @@ export class AuthService {
       id: getUserId._id,
       username: username,
       accessToken,
+      role: role,
       // refreshToken,
     };
   }
