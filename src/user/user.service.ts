@@ -6,6 +6,8 @@ import * as bcrypt from 'bcrypt';
 import { CreateUserDto } from './dto/createUser.dto';
 import { UpdateUserDto } from './dto/updateUser.dto';
 
+const pricePerPage = 100;
+
 @Injectable()
 export class UserService {
   constructor(
@@ -64,7 +66,7 @@ export class UserService {
 
     const getUserId = await this.findUserById(id);
 
-    const totalPages = getUserId.pages + updateUserDto.page;
+    const totalPages = getUserId.pages + Number(updateUserDto.pages);
 
     return this.userModel
       .findByIdAndUpdate(id, { pages: totalPages }, { new: true })
@@ -91,5 +93,43 @@ export class UserService {
     return this.userModel
       .findByIdAndUpdate(userId, { balance: newBalance }, { new: true })
       .exec();
+  }
+
+  async updateBalanceAfterBuyingPages(
+    userId: string,
+    updateUserDto: UpdateUserDto,
+  ): Promise<any> {
+    const userExists = await this.userModel.findById(userId);
+    if (!userExists) {
+      return {
+        error: 'User not found',
+      };
+    }
+
+    const buyingPages = updateUserDto.pages;
+    const buyingPrice = buyingPages * pricePerPage;
+    if (userExists.balance < buyingPrice) {
+      return {
+        error: 'Insufficient balance',
+      };
+    }
+    const newBalance = userExists.balance - buyingPrice;
+    const newPages = userExists.pages + Number(buyingPages);
+    const data = await this.userModel.findByIdAndUpdate(
+      userId,
+      {
+        balance: newBalance,
+        pages: newPages,
+      },
+      { new: true },
+    );
+
+    return {
+      message: 'Buying Pages Successfully',
+      id: data._id,
+      name: data.name,
+      balance: data.balance,
+      pages: data.pages,
+    };
   }
 }

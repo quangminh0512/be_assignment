@@ -5,6 +5,7 @@ import { Role } from './entities/user.entities';
 import { Roles } from 'src/auth/decorators/roles.decorator';
 import { RoleGuard } from 'src/auth/guards/roles.guard';
 import { UpdateUserDto } from './dto/updateUser.dto';
+import { CreateUserDto } from './dto/createUser.dto';
 
 @Controller()
 export class UserController {
@@ -90,5 +91,17 @@ export class UserController {
         balance: user.balance,
       };
     });
+  }
+
+  // [PATCH] Update pages default for user
+  @Patch('/user/:userId/buy-pages')
+  async updateBalanceAfterBuyingPages(
+    @Param('userId') userId: string,
+    @Body() updateUserDto: UpdateUserDto,
+  ): Promise<any> {
+    return this.userService.updateBalanceAfterBuyingPages(
+      userId,
+      updateUserDto,
+    );
   }
 }

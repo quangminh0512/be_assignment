@@ -5,7 +5,7 @@ export class CreateUserDto {
   password: string;
   name?: string;
   role: string;
-  page?: number;
+  pages?: number;
   balance?: number;
   firstName?: string;
   lastName?: string;
