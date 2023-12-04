@@ -35,14 +35,14 @@ export class TrackingPrint {
   @Prop({ default: 0 })
   copies: number;
 
-  @Prop()
-  time_started: string;
+  @Prop({ default: +new Date() })
+  time_started: Date;
 
   @Prop()
-  time_end: string;
+  time_end: Date;
 
   @Prop()
-  date: number;
+  date: Date;
 }
 
 export const TrackingPrintSchema = SchemaFactory.createForClass(TrackingPrint);

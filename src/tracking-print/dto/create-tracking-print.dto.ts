@@ -7,7 +7,7 @@ export class CreateTrackingPrintDto {
   pages: string;
   paperType: string;
   copies: string;
-  time_started: string;
+  time_started: string | Date;
   time_end: string;
-  date: number;
+  date: string | Date | number;
 }

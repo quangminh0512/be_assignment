@@ -23,12 +23,14 @@ export class TrackingPrintService {
       +createTrackingPrintDto.pages *
       secondsPerPrint;
 
+    createTrackingPrintDto.time_started = new Date();
+
     // Chuyển startTime gửi lên thành dạng Date để lấy endTime và date -> Chuyển format time_started sang ISOString
     const startTime: Date = new Date(createTrackingPrintDto.time_started);
     createTrackingPrintDto.time_started = startTime.toISOString();
 
     // Lưu date để tiện filter các tracking print theo ngày
-    createTrackingPrintDto.date = startTime.getDate();
+    createTrackingPrintDto.date = new Date();
 
     // Tính endTime từ startTime -> Chuyển format time_end sang ISOString
     const endTime: Date = new Date(
